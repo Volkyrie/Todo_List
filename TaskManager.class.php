@@ -26,22 +26,30 @@
             $this->_name = $name;
         }
 
-        public function __construct($name) {
-            $this->_dbh = new Database();
-            $this->setName($name);
-            echo $this->_name;
+        public function __construct() {
+            $this->_dbh = DataBase::getInstance();
         }
 
         public function getAllTasks() {
-
+            $sql = "SELECT * FROM mytasks";
+            $query = $this->_dbh->prepare($sql);
+            $query->execute();
+            $tasks = $query->fetchAll(PDO::FETCH_ASSOC);
+            return $tasks;
         }
 
         public function addTask(string $task) {
-            return $task;
+            $sql = "INSERT INTO mytasks (name) VALUES (:name)";
+            $query = $this->_dbh->prepare($sql);
+            $query->bindParam(':name', $task, PDO::PARAM_STR);
+            $query->execute();
         }
 
         public function delTask(int $id) {
-
+            $sql = "UPDATE mytasks SET action=1 WHERE id=:id";
+            $query = $this->_dbh->prepare($sql);
+            $query->bindParam(':id', $id, PDO::PARAM_INT);
+            $query->execute();
         }
     }
 
